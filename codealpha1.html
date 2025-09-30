@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Responsive Image Gallery</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+  h1 {
+    text-align: center;
+    margin: 20px 0;
+  }
+  /* Filter Buttons */
+  .filter-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .filter-buttons button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin: 5px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .filter-buttons button:hover,
+  .filter-buttons button.active {
+    background: #2980b9;
+  }
+
+  /* Gallery grid */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto 50px auto;
+    padding: 0 10px;
+  }
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 4 / 3; /* Fixed aspect ratio for uniformity */
+    border-radius: 8px;
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Fit images properly */
+    display: block;
+    transition: transform 0.4s ease, filter 0.4s ease;
+  }
+  .gallery-item:hover img {
+    transform: scale(1.1);
+    filter: brightness(0.8) saturate(1.2);
+  }
+  /* Category label on hover */
+  .gallery-item::after {
+    content: attr(data-category);
+    position: absolute;
+    bottom: 7px;
+    left: 7px;
+    padding: 3px 7px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 12px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .gallery-item:hover::after {
+    opacity: 1;
+  }
+
+  /* Lightbox overlay */
+  .lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 10, 10, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+  }
+  .lightbox-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  /* Navigation buttons */
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background 0.3s ease;
+  }
+  .prev:hover, .next:hover {
+    background: white;
+  }
+  .prev {
+    left: -60px;
+  }
+  .next {
+    right: -60px;
+  }
+  /* Close button */
+  .lightbox-close {
+    position: absolute;
+    top: -35px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .lightbox-close:hover {
+    background: white;
+  }
+
+  /* Responsive adjustments */
+  @media(max-width: 600px) {
+    .prev {
+      left: -40px;
+    }
+    .next {
+      right: -40px;
+    }
+    .filter-buttons button {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Responsive Image Gallery</h1>
+
+<div class="filter-buttons">
+  <button class="active" data-filter="all">All</button>
+  <button data-filter="nature">Nature</button>
+  <button data-filter="people">People</button>
+  <button data-filter="architecture">Architecture</button>
+</div>
+
+<div class="gallery" id="gallery">
+  <div class="gallery-item" data-category="nature">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=300&q=80" alt="Nature Water" />
+  </div>
+  <div class="gallery-item" data-category="people">
+    <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=300&q=80" alt="People Portrait" />
+  </div>
+  <div class="gallery-item" data-category="architecture">
+    <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=300&q=80" alt="Architecture Building" />
+  </div>
+  <div class="gallery-item" data-category="nature">
+    <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=300&q=80" alt="Nature Forest" />
+  </div>
+  <div class="gallery-item" data-category="people">
+    <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=300&q=80" alt="People Smile" />
+  </div>
+  <div class="gallery-item" data-category="architecture">
+    <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=300&q=80" alt="Architecture Bridge" />
+  </div>
+  <div class="gallery-item" data-category="nature">
+    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80" alt="Nature Mountain" />
+  </div>
+  <div class="gallery-item" data-category="architecture">
+    <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=300&q=80" alt="Architecture City" />
+  </div>
+</div>
+
+<div class="lightbox-overlay" id="lightbox">
+  <div class="lightbox-content">
+    <button class="lightbox-close" id="closeBtn">&times;</button>
+    <button class="prev" id="prevBtn">&#10094;</button>
+    <img src="" alt="Enlarged Image" id="lightboxImage" />
+    <button class="next" id="nextBtn">&#10095;</button>
+  </div>
+</div>
+
+<script>
+  const gallery = document.getElementById('gallery');
+  const items = gallery.querySelectorAll('.gallery-item');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  const closeBtn = document.getElementById('closeBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const filterButtons = document.querySelectorAll('.filter-buttons button');
+
+  let currentIndex = 0;
+  let filteredItems = Array.from(items);
+
+  // Show lightbox with selected image
+  function openLightbox(index) {
+    currentIndex = index;
+    const imgSrc = filteredItems[currentIndex].querySelector('img').src;
+    lightboxImage.src = imgSrc;
+    lightbox.style.display = 'flex';
+  }
+
+  // Close lightbox
+  function closeLightbox() {
+    lightbox.style.display = 'none';
+  }
+
+  // Show previous image
+  function showPrev() {
+    currentIndex = (currentIndex === 0) ? filteredItems.length - 1 : currentIndex - 1;
+    lightboxImage.src = filteredItems[currentIndex].querySelector('img').src;
+  }
+
+  // Show next image
+  function showNext() {
+    currentIndex = (currentIndex === filteredItems.length - 1) ? 0 : currentIndex + 1;
+    lightboxImage.src = filteredItems[currentIndex].querySelector('img').src;
+  }
+
+  // Click on gallery item to open lightbox
+  items.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      openLightbox(index);
+    });
+  });
+
+  // Filter gallery by category
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const filter = button.getAttribute('data-filter');
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      filteredItems = [];
+      items.forEach(item => {
+        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+          item.style.display = 'block';
+          filteredItems.push(item);
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // Close lightbox if open after filter
+      closeLightbox();
+    });
+  });
+
+  // Lightbox controls
+  closeBtn.addEventListener('click', closeLightbox);
+  prevBtn.addEventListener('click', showPrev);
+  nextBtn.addEventListener('click', showNext);
+
+  // Close lightbox on overlay click
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  // Keyboard navigation for lightbox
+  window.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex') {
+      if (e.key === 'ArrowLeft') {
+        showPrev();
+      } else if (e.key === 'ArrowRight') {
+        showNext();
+      } else if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
